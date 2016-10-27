@@ -1,61 +1,52 @@
-﻿using System;
+﻿using Core_Lab4_Db_Intro.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core_Lab4_Db_Intro
 {
-    public abstract class Repository<T>
-        where T: IdAble
+    public abstract class Repository<T>: IRepository<T>
+        where T : IdAble
     {
+        protected readonly ProductManagement context;
+        public Repository(ProductManagement pm)
+        {
+            context = pm;
+        }
+
         public void Create(T p)
         {
-            using (ProductManagement context = new ProductManagement())
-            {
-                context.Add(p);
-                context.SaveChanges();
-            }
+            context.Add(p);
+            context.SaveChanges();
         }
 
         public void Update(T p)
         {
-            using (ProductManagement context = new ProductManagement())
-            {
-                context.Update(p);
-                context.SaveChanges();
-            }
+            context.Update(p);
+            context.SaveChanges();
         }
 
         public void Delete(T p)
         {
-            using (ProductManagement context = new ProductManagement())
-            {
-                context.Remove(p);
-                context.SaveChanges();
-            }
+            context.Remove(p);
+            context.SaveChanges();
         }
 
         public IEnumerable<T> GetById(Guid id)
         {
-            using (ProductManagement context = new ProductManagement())
-            {
-                var queryResult = from R in context.Set<T>()
-                                  where R.Id == id
-                                  select R;
+            var queryResult = from R in context.Set<T>()
+                                where R.Id == id
+                                select R;
 
-                return queryResult;
-            }
+            return queryResult;
         }
 
         public IEnumerable<T> GetAll()
         {
-            using (ProductManagement context = new ProductManagement())
-            {
-                var queryResult = from R in context.Set<T>()
-                                  select R;
+            var queryResult = from R in context.Set<T>()
+                                select R;
 
-                return queryResult;
-            }
+            return queryResult;
         }
     }
 }
